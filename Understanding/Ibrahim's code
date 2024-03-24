@@ -1,0 +1,30 @@
+import socket
+import time
+host, port = "192.168.1.13", 25001
+P1 = 1
+P2= 2
+P3 = 3
+data = str(P1)+","+str(P2)+","+str(P3)
+movements = 0
+
+# SOCK_STREAM means TCP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+try:
+
+    # Connect to the server and send the data
+    sock.connect((host, port))
+    
+    while movements <= 10:
+        sock.sendall(data.encode("utf-8"))
+        P1 = P1+1
+        P2 = P2+1
+        P3 = P3+1
+        data = str(P1) + "," + str(P2) + "," + str(P3)
+        movements=movements+1
+        response = sock.recv(1024).decode("utf-8")
+        print (response)
+        time.sleep(1)
+
+finally:
+    sock.close()
