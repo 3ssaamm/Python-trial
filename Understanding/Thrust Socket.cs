@@ -7,8 +7,8 @@ using System.Threading;
 public class ThrusterControl : MonoBehaviour
 {
     Thread mThread;
-    public string connectionIP = "127.0.0.1";
-    public int connectionPort = 25001;
+    public string connectionIP = "127.0.0.1"; // Default IP, changeable in Inspector
+    public int connectionPort = 25001;        // Default port, changeable in Inspector
     TcpListener listener;
     TcpClient client;
 
@@ -34,6 +34,7 @@ public class ThrusterControl : MonoBehaviour
         listener.Stop();
     }
 
+
     void ReceiveThrusterData()
     {
         NetworkStream nwStream = client.GetStream();
@@ -44,7 +45,7 @@ public class ThrusterControl : MonoBehaviour
         if (!string.IsNullOrEmpty(dataReceived) && dataReceived.StartsWith("fire_thrusters"))
         {
             // Parse the thruster data
-            string thrusterData = dataReceived.Substring(15); // Remove the command part
+            string[] thrusterData = dataReceived.Substring(15).Split(',');
             PrintThrusterData(thrusterData);
             
             // Send confirmation back to Python
@@ -53,20 +54,18 @@ public class ThrusterControl : MonoBehaviour
         }
     }
 
-    void PrintThrusterData(string data)
+    void PrintThrusterData(string[] data)
     {
-        // Split the data for each thruster
-        string[] thrusters = data.Split(';');
-        foreach (string thruster in thrusters)
+        for (int i = 0; i < data.Length; i++)
         {
-            // Split the name from the values
-            string[] parts = thruster.Split(':');
-            if (parts.Length == 2)
+            // Assuming the format is "magnitude,direction"
+            string[] values = data[i].Split(',');
+            if (values.Length == 2)
             {
-                string thrusterName = parts[0];
-                string values = parts[1];
+                string magnitude = values[0];
+                string direction = values[1];
                 // Print to the console
-                Debug.Log($"Thruster: {thrusterName}, Values: {values}");
+                Debug.Log($"Thruster {i+1}: Magnitude: {magnitude}, Direction: {direction}");
             }
         }
     }
