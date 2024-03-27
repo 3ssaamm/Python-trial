@@ -18,7 +18,8 @@ def set_attitude(sock, pitch, yaw, roll):
 
 
 # Initial attitude values
-attitude = [0, 0, 0]  # pitch, yaw, roll
+# pitch, yaw, roll
+attitude = [0, 0, 0]  
 
 while True:
     # Sleep for a short period
@@ -30,4 +31,5 @@ while True:
     attitude[2] += 1  # Increment roll
     
     # Apply the attitude function
-    set_attitude(sock, *attitude)  # Unpack the list into function arguments
+    # Unpack the list into function arguments
+    set_attitude(sock, *attitude)  
