@@ -19,7 +19,6 @@ def set_attitude(sock, pitch, yaw, roll):
 
 # Initial attitude values
 # pitch, yaw, roll
-#yarab
 attitude = [0, 0, 0]  
 
 while True:
