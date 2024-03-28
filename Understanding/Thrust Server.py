@@ -18,10 +18,10 @@ def fire_thrusters(sock, thruster_data):
 # Thruster data for Mars 2020 rover (example values)
 # Format: [magnitude, direction in degrees]
 thruster_data = [
-    "1.0,0",   # front_left, 0 degrees
-    "1.0,90",  # front_right, 90 degrees
-    "1.0,180", # back_left, 180 degrees
-    "1.0,270"  # back_right, 270 degrees
+    "1.0",   # front_left, 0 degrees
+    "3.0",  # front_right, 90 degrees
+    "0.0", # back_left, 180 degrees
+    "2.0"  # back_right, 270 degrees
 ]
 
 # Fire thrusters with the specified command
