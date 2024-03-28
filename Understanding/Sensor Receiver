@@ -6,6 +6,8 @@ host, port = "0.0.0.0", 25002
 # SOCK_STREAM means TCP socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+data_received_count = 0  # Counter to keep track of data received
+
 try:
     # Bind the socket to the host and port
     server.bind((host, port))
@@ -22,8 +24,12 @@ try:
             data = connection.recv(1024).decode("utf-8")
             print("Received data from Unity:", data)
 
-        # Pause execution for 2 seconds
-        time.sleep(2)
+            # Increment the counter and print the count
+            data_received_count += 1
+            print("Data received count:", data_received_count, "\n")
+
+        # Pause execution for 1 seconds
+        time.sleep(1)
 
 finally:
     # Close the socket
