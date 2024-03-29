@@ -31,7 +31,7 @@ def fire_thrusters(sock, thruster_data):
         # Send the command to Unity
         try:
             sock.sendall(command.encode("UTF-8"))
-            print("Thrustres fired successfully!")
+            print("Sent command to Unity:", command)
         except socket.error as e:
             print(f"Error sending data: {e}")
             break
