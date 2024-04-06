@@ -6,6 +6,13 @@ import threading
 send_host, send_port = "127.0.0.1", 25001
 send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+# Initialize connection for receiving sensor data
+receive_host, receive_port = "127.0.0.1", 25002
+receive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+receive_sock.bind((receive_host, receive_port))
+receive_sock.listen(1)
+
+
 # Print a message indicating the start of connection attempts
 print("Attempting to connect to Unity...")
 
@@ -13,20 +20,16 @@ print("Attempting to connect to Unity...")
 while True:
     try:
         send_sock.connect((send_host, send_port))
-        # Print a message indicating successful connection
+        # Print a message indicating successful connection and break out of the loop
+        #print("Successfully connected to Unity.")
         break
     except socket.error as e:
         print(f"Error connecting: {e}")
         time.sleep(1)
 
 
-# Initialize connection for receiving sensor data
-receive_host, receive_port = "127.0.0.1", 25002
-receive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-receive_sock.bind((receive_host, receive_port))
-receive_sock.listen(1)
-
 data_received_count = 0  # Counter to keep track of data received
+
 
 # Define the receive_sensor_data function
 def receive_sensor_data(sock, stop_event):
@@ -55,19 +58,19 @@ def receive_sensor_data(sock, stop_event):
             print(f"Error receiving data: {e}")
             break
 
-# Define the fire_thrusters function
 def fire_thrusters(sock, thrusters_magnitudes):
+    timeout = 5  # Set a timeout of 5 seconds
+    start_time = time.time()
     while True:
-        
-        # Send the command to Unity
         try:
+            # Send the command to Unity
             sock.sendall(thrusters_magnitudes.encode('utf-8'))
+            break
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
-            exit()
-
-        # Wait for a short period of time to prevent network congestion and excessive CPU usage
-        time.sleep(1)
+            time.sleep(1)
+        if time.time() - start_time > timeout:
+            break
 
 # Thruster data for Mars 2020 rover (example values)
 thrusters_magnitudes = "0.20;0.25;0.25;0.25"  # "A1;A2;B1;B2"
@@ -87,7 +90,7 @@ fire_thread.start()
 try:
     receive_thread.join()
     fire_thread.join()
-    print("Connected to Unity Successfully!.")
+
 finally:
     # Print a message indicating the end of the program
     print("Program ended.")
