@@ -72,7 +72,7 @@ def fire_thrusters(sock, thruster_data):
         time.sleep(1)
 
 # Thruster data for Mars 2020 rover (example values)
-thruster_data = [
+thrusters_magnitude = [
     "0.25",   # A1
     "0.25",   # B1
     "0.25",   # B2
@@ -87,7 +87,7 @@ receive_thread = threading.Thread(target=receive_sensor_data, args=(receive_sock
 receive_thread.start()
 
 # Start the thread for firing thrusters
-fire_thread = threading.Thread(target=fire_thrusters, args=(send_sock, thruster_data))
+fire_thread = threading.Thread(target=fire_thrusters, args=(send_sock, thrusters_magnitude))
 fire_thread.start()
 
 # Join threads to the main thread
