@@ -28,8 +28,25 @@ def send_data():
             print("Error sending data to server: {}".format(e))
             exit()
 
-# Start the thread
+# Create a thread to receive data from the server
+def receive_data():
+    while True:
+        # Receive data from the server
+        try:
+            data = sock.recv(1024)
+        except socket.error as e:
+            print("Error receiving data from server: {}".format(e))
+            exit()
+
+        # Decode the data
+        data = data.decode('utf-8')
+
+        # Print the data
+        print("Received data from server: {}".format(data))
+
+# Start the threads
 threading.Thread(target=send_data).start()
+threading.Thread(target=receive_data).start()
 
 # Keep the main thread running
 while True:

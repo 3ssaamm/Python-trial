@@ -14,7 +14,6 @@ while True:
     try:
         send_sock.connect((send_host, send_port))
         # Print a message indicating successful connection
-        print("Connected to Unity Successfully!.")
         break
     except socket.error as e:
         print(f"Error connecting: {e}")
@@ -59,20 +58,19 @@ def receive_sensor_data(sock, stop_event):
 # Define the fire_thrusters function
 def fire_thrusters(sock, thrusters_magnitudes):
     while True:
-        # Create the command string
-        command = "fire_thrusters: " + thrusters_magnitudes
+        
         # Send the command to Unity
         try:
-            sock.sendall(command.encode("UTF-8"))
-            print("Sent command to Unity:", command)
+            sock.sendall(thrusters_magnitudes.encode('utf-8'))
         except socket.error as e:
-            print(f"Error sending data: {e}")
-            break
+            print("Error sending data to server: {}".format(e))
+            exit()
+
         # Wait for a short period of time to prevent network congestion and excessive CPU usage
         time.sleep(1)
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = ("0.20;0.25;0.25;0.25") # " A1; A2; B1; B2 "
+thrusters_magnitudes = "0.20;0.25;0.25;0.25"  # "A1;A2;B1;B2"
     
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
@@ -89,6 +87,7 @@ fire_thread.start()
 try:
     receive_thread.join()
     fire_thread.join()
+    print("Connected to Unity Successfully!.")
 finally:
     # Print a message indicating the end of the program
     print("Program ended.")
