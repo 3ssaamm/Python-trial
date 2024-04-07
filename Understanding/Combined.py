@@ -29,7 +29,7 @@ while True:
 
 
 data_received_count = 0  # Counter to keep track of data received
-
+last_data_received_time = time.time()  # Time of last data received
 
 # Define the receive_sensor_data function
 def receive_sensor_data(sock, stop_event):
@@ -63,9 +63,11 @@ def fire_thrusters(sock, thrusters_magnitudes):
     start_time = time.time()
     while True:
         try:
+            # Convert the list of thruster magnitudes to a string
+            thrusters_magnitudes_string = ";".join(map(str, thrusters_magnitudes))
             # Send the command to Unity
-            sock.sendall(thrusters_magnitudes.encode('utf-8'))
-            print(f"Sent command to Unity: {thrusters_magnitudes}")
+            sock.sendall(thrusters_magnitudes_string.encode('utf-8'))
+            print(f"Sent command to Unity: {thrusters_magnitudes_string}")
             break
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
@@ -74,8 +76,8 @@ def fire_thrusters(sock, thrusters_magnitudes):
             break
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = "0.20;0.25;0.25;0.25"  # "A1;A2;B1;B2"   
-    
+thrusters_magnitudes = [0.20, 0.25, 0.25, 0.25]  # "A1;A2;B1;B2"   
+
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
 
