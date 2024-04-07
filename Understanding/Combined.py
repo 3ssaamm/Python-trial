@@ -24,7 +24,7 @@ while True:
         #print("Successfully connected to Unity.")
         break
     except socket.error as e:
-        print(f"Error connecting: {e}")
+        print(f"Trying again due to an error connecting: {e}")
         time.sleep(1)
 
 
@@ -58,9 +58,8 @@ def receive_sensor_data(sock, stop_event):
             print(f"Error receiving data: {e}")
             break
 
+# Define the fire_thrusters function
 def fire_thrusters(sock, thrusters_magnitudes):
-    timeout = 5  # Set a timeout of 5 seconds
-    start_time = time.time()
     while True:
         try:
             # Convert the list of thruster magnitudes to a string
@@ -68,15 +67,20 @@ def fire_thrusters(sock, thrusters_magnitudes):
             # Send the command to Unity
             sock.sendall(thrusters_magnitudes_string.encode('utf-8'))
             print(f"Sent command to Unity: {thrusters_magnitudes_string}")
+            # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second and call the fire_thrusters function every 1 second
+            thrusters_magnitudes[0] += 0.01
+            thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
+            print(thrusters_magnitudes)
+            # Sleep for 1 second
+            time.sleep(1)
             break
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
             time.sleep(1)
-        if time.time() - start_time > timeout:
             break
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = [0.20, 0.25, 0.25, 0.25]  # "A1;A2;B1;B2"   
+thrusters_magnitudes = [0.20, 0.25, 0.25, 0.25]  # [A1, A2, B1, B2]   
 
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
@@ -90,13 +94,6 @@ fire_thread = threading.Thread(target=fire_thrusters, args=(send_sock, thrusters
 fire_thread.start()
 
 # Join threads to the main thread
-try:
-    receive_thread.join()
-    fire_thread.join()
-
-finally:
-    # Print a message indicating the end of the program
-    print("Program ended.")
-    # Close the sockets
-    send_sock.close()
-    receive_sock.close()
+while True:
+    receive_thread.join()    # Wait for the threads to finish running
+    fire_thread.join()    # Wait for the threads to finish running
