@@ -65,6 +65,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
         try:
             # Send the command to Unity
             sock.sendall(thrusters_magnitudes.encode('utf-8'))
+            print(f"Sent command to Unity: {thrusters_magnitudes}")
             break
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
@@ -73,7 +74,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
             break
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = "0.20;0.25;0.25;0.25"  # "A1;A2;B1;B2"
+thrusters_magnitudes = "0.20;0.25;0.25;0.25"  # "A1;A2;B1;B2"   
     
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()

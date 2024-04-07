@@ -24,7 +24,7 @@ while True:
         print("Successfully connected to Unity.")
         break
     except socket.error as e:
-        print(f"Error connecting: {e}")
+        print(f"Trying again due to an error connecting: {e}")
         time.sleep(1)
 
 # Define the receive_sensor_data function
@@ -36,7 +36,8 @@ def receive_sensor_data(sock):
             if not data:
                 # If no data is received, break out of the loop
                 break
-            print("Received data from Unity:", data)
+            else:
+                print("Received data from Unity:", data)
         except socket.error as e:
             print(f"Error receiving data: {e}")
             break
@@ -66,7 +67,7 @@ receive_thread.start()
 # Fire the thrusters
 fire_thrusters(send_sock, thrusters_magnitudes)
 
-# Join the receive thread to the main thread
+# Wait for the receive thread to finish
 receive_thread.join()
 
 # Print a message indicating the end of the program
