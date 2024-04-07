@@ -82,7 +82,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
     timer.start()
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = [100, 100, 100, 100]  # [A1, A2, B1, B2]%   
+thrusters_magnitudes = [100, 100, 100, 100]  # [A1, A2, B1, B2]%
 
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
