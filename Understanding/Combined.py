@@ -60,7 +60,7 @@ def receive_sensor_data(sock, stop_event):
 
 # Define the fire_thrusters function
 def fire_thrusters(sock, thrusters_magnitudes):
-    while True:
+    def send_thrusters_data():
         try:
             # Convert the list of thruster magnitudes to a string
             thrusters_magnitudes_string = ";".join(map(str, thrusters_magnitudes))
@@ -70,14 +70,17 @@ def fire_thrusters(sock, thrusters_magnitudes):
             # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second and call the fire_thrusters function every 1 second
             thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
-            print(thrusters_magnitudes)
-            # Sleep for 1 second
-            time.sleep(1)
-            break
+            print(f"Thrusters Magnitudes cahnged to: {thrusters_magnitudes}")
+            # Create a new timer to call the send_thrusters_data function again in 1 second
+            timer = threading.Timer(1.0, send_thrusters_data)
+            timer.start()
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
-            time.sleep(1)
-            break
+            timer.cancel()  # Cancel the timer if an error occurs
+
+    # Start the timer to call the send_thrusters_data function for the first time
+    timer = threading.Timer(1.0, send_thrusters_data)
+    timer.start()
 
 # Thruster data for Mars 2020 rover (example values)
 thrusters_magnitudes = [0.20, 0.25, 0.25, 0.25]  # [A1, A2, B1, B2]   
