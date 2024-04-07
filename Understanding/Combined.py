@@ -67,7 +67,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
             # Send the command to Unity
             sock.sendall(thrusters_magnitudes_string.encode('utf-8'))
             print(f"Sent command to Unity: {thrusters_magnitudes_string}")
-            # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second
+            # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second, (Example)
             thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
             print(f"Thrusters Magnitudes cahnged to: {thrusters_magnitudes}")
@@ -82,7 +82,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
     timer.start()
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = [0.10, 0.10, 0.10, 0.10]  # [A1, A2, B1, B2]   
+thrusters_magnitudes = [100, 100, 100, 100]  # [A1, A2, B1, B2]%   
 
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
