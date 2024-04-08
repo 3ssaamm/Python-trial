@@ -2,9 +2,6 @@ import socket
 import time
 import threading
 
-# Initialize connection for sending thruster data
-send_host, send_port = "127.0.0.1", 25001
-send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Initialize connection for receiving sensor data
 receive_host, receive_port = "127.0.0.1", 25002
@@ -12,6 +9,9 @@ receive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receive_sock.bind((receive_host, receive_port))
 receive_sock.listen(1)
 
+# Initialize connection for sending thruster data
+send_host, send_port = "127.0.0.1", 25001
+send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Print a message indicating the start of connection attempts
 print("Attempting to connect to Unity...")
@@ -82,7 +82,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
     timer.start()
 
 # Thruster data for Mars 2020 rover (example values)
-thrusters_magnitudes = [100, 100, 100, 100]  # [A1, A2, B1, B2]%
+thrusters_magnitudes = [0, 00, 0, 00]  # [A1, A2, B1, B2]%
 
 # Create a threading event to signal when the receive_sensor_data thread should stop running
 stop_event = threading.Event()
