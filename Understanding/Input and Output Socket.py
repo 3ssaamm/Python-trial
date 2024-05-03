@@ -55,7 +55,7 @@ def receive_sensor_data(sock, stop_event):
                     # Update the time of last data received
                     last_data_received_time = time.time()
                     # Pause execution for a short period of time to prevent network congestion and excessive CPU usage
-                    time.sleep(0.01)
+                    time.sleep(0.1)
         except socket.error as e:
             print(f"Error receiving data: {e}")
             break
