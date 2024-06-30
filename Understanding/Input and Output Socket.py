@@ -75,7 +75,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
             # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second, (Example)
             thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
-            print(f"Thrusters Magnitudes cahnged to: {thrusters_magnitudes}")
+            print(f"Thrusters Magnitudes changed to: {thrusters_magnitudes}")
             # Create a new timer to call the send_thrusters_data function again in 1 second
             timer = threading.Timer(1.0, send_thrusters_data)
             timer.start()
