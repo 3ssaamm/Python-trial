@@ -1,6 +1,10 @@
 import socket
 import time
 import threading
+import serial
+
+# Set up the serial connection (change your port name and baud rate as needed)
+ser = serial.Serial("COM8", 9600, timeout=1)
 
 # Initialize connection for receiving sensor data
 receive_host, receive_port = "127.0.0.1", 25002
@@ -8,6 +12,10 @@ receive_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receive_sock.bind((receive_host, receive_port))
 receive_sock.listen(1)
 
+# Initialize connection for sending thruster data
+send_host, send_port = "127.0.0.1", 25001
+send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+send_sock.connect((send_host, send_port))  # Connect to Unity before starting the thread for firing thrusters
 
 # Print a message indicating the start of connection attempts
 print("Attempting to connect to Unity...")
@@ -23,17 +31,18 @@ while True:
         print(f"Trying again due to an error connecting: {e}")
         time.sleep(1)
 
-
 data_received_count = 0  # Counter to keep track of data received
 data_sent_count = 0  # Counter to keep track of data sent
 last_data_received_time = time.time()  # Time of last data received
 
-# Initialize connection for sending thruster data
-send_host, send_port = "127.0.0.1", 25001
-send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-send_sock.connect((send_host, send_port))  # Connect to Unity before starting the thread for firing thrusters
+# Function to send angles over the serial connection
+def sendAngles(angle1, angle2, angle3):
+    # Format the angles into a single string separated by commas
+    data = f"{angle1},{angle2},{angle3}\n"
+    # Send the formatted string over the serial connection
+    ser.write(data.encode('ascii'))
 
-# Define the receive_sensor_data function
+# Function to receive sensor data
 def receive_sensor_data(sock, stop_event):
     global data_received_count
     global last_data_received_time
@@ -54,13 +63,24 @@ def receive_sensor_data(sock, stop_event):
                     print("Counter:", data_received_count, "\n")
                     # Update the time of last data received
                     last_data_received_time = time.time()
+                    
+                    # Extract Euler angles from the received data
+                    try:
+                        angles = list(map(float, data.split(',')))
+                        if len(angles) == 3:
+                            sendAngles(*angles)
+                        else:
+                            print("Received data does not contain three angles.")
+                    except ValueError:
+                        print("Error parsing angles from received data.")
+                    
                     # Pause execution for a short period of time to prevent network congestion and excessive CPU usage
                     time.sleep(0.1)
         except socket.error as e:
             print(f"Error receiving data: {e}")
             break
 
-# Define the fire_thrusters function
+# Function to fire thrusters
 def fire_thrusters(sock, thrusters_magnitudes):
     def send_thrusters_data():
         global data_sent_count
@@ -72,7 +92,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
             print(f"Sent command to Unity: {thrusters_magnitudes_string}")
             data_sent_count += 1
             print("Thrusters Counter:", data_sent_count, "\n")
-            # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second, (Example)
+            # Continuously increase the first element of the thrusters_magnitudes list by 0.01 every second (example)
             thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
             print(f"Thrusters Magnitudes changed to: {thrusters_magnitudes}")
