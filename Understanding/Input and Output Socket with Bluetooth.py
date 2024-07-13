@@ -4,7 +4,7 @@ import threading
 import serial
 
 # Set up the serial connection (change your port name and baud rate as needed)
-ser = serial.Serial("COM8", 9600, timeout=1)
+ser = serial.Serial("COM6", 9600, timeout=1)
 
 # Initialize connection for receiving sensor data
 receive_host, receive_port = "127.0.0.1", 25002
