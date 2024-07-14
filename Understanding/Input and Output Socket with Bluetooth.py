@@ -89,7 +89,7 @@ def receive_sensor_data(sock, stop_event):
                             print("Received data does not contain three angles.")
                     except ValueError:
                         print("Error parsing angles from received data.")
-                    time.sleep(0.1)
+                    time.sleep(0.01)
         except socket.error as e:
             print(f"Error receiving data: {e}")
             break
@@ -115,7 +115,7 @@ def fire_thrusters(sock, thrusters_magnitudes):
     timer = threading.Timer(1.0, send_thrusters_data)
     timer.start()
 
-thrusters_magnitudes = [0, 0, 0, 0]  # [A1, A2, B1, B2]%
+thrusters_magnitudes = [0, 50, 0, 0]  # [A1, A2, B1, B2]%
 
 stop_event = threading.Event()
 
