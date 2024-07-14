@@ -3,8 +3,21 @@ import time
 import threading
 import serial
 
+def parse_angles(x):
+
+    ser = 'CurrentEulerAngles ['
+    angs = x[x.find(ser)+len(ser):-1]
+    angles = [int(float(ang)) for ang in  angs.split(',')]
+    return angles
+
+
 # Set up the serial connection (change your port name and baud rate as needed)
-ser = serial.Serial("COM6", 9600, timeout=1)
+while True:
+    try:
+        ser = serial.Serial("COM6", 9600, timeout=1)
+        break
+    except:
+        pass
 
 # Initialize connection for receiving sensor data
 receive_host, receive_port = "127.0.0.1", 25002
@@ -35,6 +48,7 @@ data_received_count = 0  # Counter to keep track of data received
 data_sent_count = 0  # Counter to keep track of data sent
 last_data_received_time = time.time()  # Time of last data received
 
+
 # Function to send angles over the serial connection
 def sendAngles(angle1, angle2, angle3):
     # Format the angles into a single string separated by commas
@@ -63,10 +77,13 @@ def receive_sensor_data(sock, stop_event):
                     print("Counter:", data_received_count, "\n")
                     # Update the time of last data received
                     last_data_received_time = time.time()
+
                     
                     # Extract Euler angles from the received data
                     try:
-                        angles = list(map(float, data.split(',')))
+                        angles = parse_angles(data)
+                        print("angles to send:",angles)
+                        # angles = list(map(float, data.split(',')))
                         if len(angles) == 3:
                             sendAngles(*angles)
                         else:
