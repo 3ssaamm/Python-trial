@@ -4,7 +4,7 @@ import threading
 import serial
 
 def parse_angles(x):
-    ser = 'CurrentEulerAngles ['
+    ser = 'Current Euler Angles ['
     angs = x[x.find(ser)+len(ser):-1]
     angles = [int(float(ang)) for ang in angs.split(',')]
     return angles
