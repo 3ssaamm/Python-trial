@@ -82,7 +82,7 @@ def receive_sensor_data(sock, stop_event):
                     last_data_received_time = time.time()
                     try:
                         angles = parse_angles(data)
-                        print("angles to send:", angles)
+                        print("Angles Sent to Orienteer:", angles)
                         if len(angles) == 3:
                             sendAngles(*angles)
                         else:
