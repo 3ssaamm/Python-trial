@@ -96,15 +96,15 @@ def receive_sensor_data(sock, stop_event):
 
 
 import random
-options = [0,302.5/2,302.5]
+options = [0,50,100]
 
 # Function to fire thrusters
 def fire_thrusters(sock, thrusters_magnitudes):
     def send_thrusters_data():
         global data_sent_count
         try:
+            thrusters_magnitudes = [random.choice(options) for i in range(4)]
             thrusters_magnitudes_string = ";".join(map(str, thrusters_magnitudes))
-            thrusters_magnitudes_string = [random.choice(options) for i in range(4)]
             sock.sendall(thrusters_magnitudes_string.encode('utf-8'))
             print(f"Sent command to Unity: {thrusters_magnitudes_string}")
             data_sent_count += 1
@@ -112,13 +112,15 @@ def fire_thrusters(sock, thrusters_magnitudes):
             thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
             print(f"Thrusters Magnitudes changed to: {thrusters_magnitudes}")
-            timer = threading.Timer(1.0, send_thrusters_data)
+            timer = threading.Timer(0.5, send_thrusters_data)
             timer.start()
         except socket.error as e:
             print("Error sending data to server: {}".format(e))
 
     timer = threading.Timer(1.0, send_thrusters_data)
     timer.start()
+
+thrusters_magnitudes = [0, 50, 0, 0]  # [A1, A2, B1, B2]%
 
 stop_event = threading.Event()
 
