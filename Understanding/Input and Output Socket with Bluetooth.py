@@ -400,9 +400,9 @@ class MarsEntryGuidance:
                 print(f'{bank_angle}')
 
 
-MNG= MarsEntryGuidance(mass=2200)
-MNG.set_initial_state(0.0, 0.0, 125e3, 4000.0, -1000.0, -250.0)
-MNG.guide()
+# MNG= MarsEntryGuidance(mass=2200)
+# MNG.set_initial_state(0.0, 0.0, 125e3, 4000.0, -1000.0, -250.0)
+# MNG.guide()
 # def test_guidance_algorithm(mars_guidance, initial_state, target_state, tolerance, max_iterations=1000):
 #   """
 #   This function tests the Mars entry guidance algorithm by simulating the descent process.
