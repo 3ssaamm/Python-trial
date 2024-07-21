@@ -120,8 +120,6 @@ def fire_thrusters(sock, thrusters_magnitudes):
     timer = threading.Timer(1.0, send_thrusters_data)
     timer.start()
 
-thrusters_magnitudes = [0, 50, 0, 0]  # [A1, A2, B1, B2]%
-
 stop_event = threading.Event()
 
 receive_thread = threading.Thread(target=receive_sensor_data, args=(receive_sock, stop_event))
