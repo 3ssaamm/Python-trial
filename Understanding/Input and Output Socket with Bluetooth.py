@@ -109,7 +109,6 @@ def fire_thrusters(sock, thrusters_magnitudes):
             print(f"Sent command to Unity: {thrusters_magnitudes_string}")
             data_sent_count += 1
             print("Thrusters Counter:", data_sent_count, "\n")
-            thrusters_magnitudes[0] += 0.01
             thrusters_magnitudes[0] = round(thrusters_magnitudes[0], 2)
             print(f"Thrusters Magnitudes changed to: {thrusters_magnitudes}")
             timer = threading.Timer(0.5, send_thrusters_data)
